@@ -4,10 +4,9 @@ namespace Domain.Requests
 {
     public class LoteRequest
     {
+        public string? Codigo { get; set; }
         [Required]
-        public string Codigo { get; set; }
-        [Required]
-        public DateOnly Validade { get; set; }
+        public string DataValidade { get; set; }
         [Required]
         public int UnidadesProdutos { get; set; }
         [Required]
