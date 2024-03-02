@@ -4,6 +4,7 @@ using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ControladorEstoqueContext))]
-    partial class ControladorEstoqueContextModelSnapshot : ModelSnapshot
+    [Migration("20240302020356_atualiza_data_validade")]
+    partial class atualiza_data_validade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,9 +43,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("UnidadesProdutos")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("Validade")
-                        .HasColumnType("date");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProdutoId");
@@ -62,6 +62,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateOnly>("Validade")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
