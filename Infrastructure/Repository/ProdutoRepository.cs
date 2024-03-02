@@ -32,7 +32,7 @@ namespace Infrastructure.Repository
             return produto;
         }
 
-        public IEnumerable<Produto> GetAll()
+        public IEnumerable<Produto>? GetAll()
         {
            return _controladorEstoqueContext.Produtos.ToList();
         }
