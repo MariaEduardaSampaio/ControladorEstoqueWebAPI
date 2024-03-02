@@ -11,7 +11,7 @@ namespace Domain.Interfaces.Services
         IEnumerable<Lote> ListarLotesVencidos();
         Lote ListarLotePorCodigo(string codigo);
         Lote ListarLotePorID(int idLote);
-        Lote Atualizar(LoteRequest request);
+        Lote Atualizar(LoteRequest request, int id);
         Lote Remover(int idLote);
         IEnumerable<Lote> RemoverLotesVencidos();
     }
