@@ -1,3 +1,9 @@
+using ControladorEstoqueWebAPI.Services;
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Infrastructure.Context;
+using Infrastructure.Repository;
+using Microsoft.AspNetCore.Localization;
 
 namespace ControladorEstoqueWebAPI
 {
@@ -7,16 +13,22 @@ namespace ControladorEstoqueWebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddDbContext<ControladorEstoqueContext>();
+            builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+            builder.Services.AddScoped<ILoteRepository, LoteRepository>();
+
             // Add services to the container.
+            builder.Services.AddScoped<ILoteService, LoteService>();
+            builder.Services.AddScoped<IProdutoService, ProdutoService>();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.Configure<RequestLocalizationOptions>(options => options.DefaultRequestCulture = new RequestCulture("pt-BR"));
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -26,7 +38,6 @@ namespace ControladorEstoqueWebAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
