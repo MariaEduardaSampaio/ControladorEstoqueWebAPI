@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Requests
 {
     public class ProdutoRequest
     {
         [Required]
+        [MinLength(2)]
         public string Nome { get; set; }
     }
 }
