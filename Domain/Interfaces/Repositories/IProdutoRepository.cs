@@ -7,7 +7,7 @@ namespace Domain.Interfaces.Repositories
         int Create(Produto produto);
         IEnumerable<Produto>? GetAll();
         Produto? GetByID(int id);
-        Produto? GetByName(string name);
+        IEnumerable<Produto>? GetByName(string name);
         void Update(Produto produto);
         Produto? Delete(int id);
     }
