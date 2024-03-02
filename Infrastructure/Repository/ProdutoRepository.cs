@@ -4,7 +4,7 @@ using Infrastructure.Context;
 
 namespace Infrastructure.Repository
 {
-    internal class ProdutoRepository : IProdutoRepository
+    public class ProdutoRepository : IProdutoRepository
     {
         protected readonly ControladorEstoqueContext _controladorEstoqueContext;
 
@@ -12,6 +12,7 @@ namespace Infrastructure.Repository
         {
             _controladorEstoqueContext = controladorEstoqueContext;
         }
+
         public int Create(Produto produto)
         {
             _controladorEstoqueContext.Produtos.Add(produto);
@@ -33,7 +34,7 @@ namespace Infrastructure.Repository
 
         public IEnumerable<Produto> GetAll()
         {
-            return _controladorEstoqueContext.Produtos.ToList();
+           return _controladorEstoqueContext.Produtos.ToList();
         }
 
         public Produto? GetByID(int id)
@@ -48,7 +49,7 @@ namespace Infrastructure.Repository
 
         public void Update(Produto produto)
         {
-            _controladorEstoqueContext.Produtos.Update(produto);
+            _controladorEstoqueContext.Update(produto);
             SaveChanges();
         }
 
