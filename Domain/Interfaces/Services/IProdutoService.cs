@@ -14,7 +14,7 @@ namespace Domain.Interfaces.Services
         IEnumerable<Produto> ListarTodosOsProdutos();
         IEnumerable<Produto> ListarProdutosPorNome(string nome);
         Produto ListarProdutoPorID(int idProduto);
-        Produto Atualizar(ProdutoRequest request);
-        Produto Remover(int idProduto);
+        Produto AtualizarProduto(ProdutoRequest request, int idProduto);
+        Produto RemoverProduto(int idProduto);
     }
 }
