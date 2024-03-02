@@ -32,7 +32,20 @@ namespace Infrastructure.Repository
             return lote;
         }
 
-        public IEnumerable<Lote> GetAll()
+        public IEnumerable<Lote>? DeleteExpiredBatches()
+        {
+            var lotesVencidos = _controladorEstoqueContext.Lotes
+                .Where(l => l.Validade <= DateOnly.FromDateTime(DateTime.Now.Date));
+
+            foreach (var lote in lotesVencidos)
+                _controladorEstoqueContext.Lotes.Remove(lote);
+
+            SaveChanges();
+
+            return lotesVencidos;
+        }
+
+        public IEnumerable<Lote>? GetAll()
         {
             return _controladorEstoqueContext.Lotes.ToList();
         }
