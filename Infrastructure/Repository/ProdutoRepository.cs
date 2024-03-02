@@ -42,9 +42,9 @@ namespace Infrastructure.Repository
             return _controladorEstoqueContext.Produtos.Find(id);
         }
 
-        public Produto? GetByName(string name)
+        public IEnumerable<Produto>? GetByName(string name)
         {
-            return _controladorEstoqueContext.Produtos.FirstOrDefault(p => p.Nome == name);
+            return _controladorEstoqueContext.Produtos.Where(p => p.Nome.Contains(name));
         }
 
         public void Update(Produto produto)
