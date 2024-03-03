@@ -13,11 +13,11 @@ namespace Infrastructure.Repository
             _controladorEstoqueContext = controladorEstoqueContext;
         }
 
-        public int Create(Produto produto)
+        public Produto Create(Produto produto)
         {
             _controladorEstoqueContext.Produtos.Add(produto);
             SaveChanges();
-            return produto.Id;
+            return produto;
         }
 
         public Produto? Delete(int id)
