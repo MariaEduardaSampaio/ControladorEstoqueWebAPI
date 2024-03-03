@@ -16,17 +16,48 @@ namespace ControladorEstoqueWebAPI.Services
             _produtoRepository = produtoRepository;
 
         }
-        public Lote Adicionar(LoteRequest request)
+
+        private string GerarCodigo(DateOnly dataValidade, string nomeProduto)
+        {
+            string dia = dataValidade.Day.ToString("00");
+            string mes = dataValidade.Month.ToString("00");
+            string ano = dataValidade.Year.ToString().Substring(2, 2);
+
+            string duasIniciais = nomeProduto.Length >= 2 ? nomeProduto.Substring(0, 2).ToUpper() : nomeProduto.ToUpper();
+
+            int randomSerie = new Random().Next(100, 1000);
+            string codigo = $"{dia}{mes}{ano}{duasIniciais}{randomSerie}";
+
+            if (codigo.Length > 11)
+                codigo = codigo.Substring(0, 11);
+
+            return codigo;
+        }
+
+        private DateOnly ConverterDataValidade(string validadeString)
+        {
+            if (!DateOnly.TryParse(validadeString, out DateOnly validade))
+                validade = DateOnly.MinValue;
+
+            if (validade == DateOnly.MinValue)
+                throw new ArgumentException("Data de validade inserida não está em um formato válido.");
+
+            return validade;
+        }
+
+        public Lote AdicionarLote(LoteRequest request)
         {
             var produto = _produtoRepository.GetByID(request.ProdutoId);
 
             if (produto is not null)
             {
+                var validade = ConverterDataValidade(request.DataValidade);
+
                 var lote = new Lote()
                 {
-                    Codigo = request.Codigo,
                     UnidadesProdutos = request.UnidadesProdutos,
-                    Validade = request.Validade,
+                    Validade = validade,
+                    Codigo = GerarCodigo(validade, produto.Nome),
                     Produto = produto
                 };
 
@@ -38,28 +69,30 @@ namespace ControladorEstoqueWebAPI.Services
                 throw new ArgumentException($"Não existe um produto de ID {request.ProdutoId}.");
         }
 
-        public Lote Atualizar(LoteRequest request, int id)
+        public Lote AtualizarLote(LoteRequest request, int id)
         {
+            var lote = _loteRepository.GetByID(id);
             var produto = _produtoRepository.GetByID(request.ProdutoId);
 
-            if (produto is not null)
+            if (lote is not null)
             {
-                var lote = new Lote()
+                if (produto is not null)
                 {
-                    Id = id,
-                    Codigo = request.Codigo,
-                    UnidadesProdutos = request.UnidadesProdutos,
-                    Validade = request.Validade,
-                    Produto = produto,
-                    ProdutoId = produto.Id
-                };
+                    lote.UnidadesProdutos = request.UnidadesProdutos;
+                    lote.Validade = ConverterDataValidade(request.DataValidade);
+                    lote.Codigo = GerarCodigo(lote.Validade, produto.Nome);
+                    lote.Produto = produto;
+                    lote.ProdutoId = produto.Id;
 
-                _loteRepository.Create(lote);
+                    _loteRepository.Update(lote);
 
-                return lote;
+                    return lote;
+                }
+                else
+                    throw new ArgumentException($"Não existe um produto de ID {request.ProdutoId}.");
             }
             else
-                throw new ArgumentException($"Não existe um produto de ID {request.ProdutoId}.");
+                throw new ArgumentException($"Não existe um lote de ID {id}.");
         }
 
         public Lote ListarLotePorCodigo(string codigo)
@@ -85,7 +118,7 @@ namespace ControladorEstoqueWebAPI.Services
             var produto = _produtoRepository.GetByID(idProduto);
 
             if (produto is not null)
-            { 
+            {
                 var lotes = _loteRepository.GetAllByProduct(idProduto);
                 if (lotes.Any())
                     return lotes;
@@ -114,7 +147,7 @@ namespace ControladorEstoqueWebAPI.Services
                 throw new ArgumentException("Não há lotes em registro.");
         }
 
-        public Lote Remover(int idLote)
+        public Lote RemoverLote(int idLote)
         {
             var lote = _loteRepository.Delete(idLote);
             if (lote is not null)
@@ -125,12 +158,16 @@ namespace ControladorEstoqueWebAPI.Services
 
         public IEnumerable<Lote> RemoverLotesVencidos()
         {
-            var lotes = ListarLotesVencidos();
+            var lotes = _loteRepository.GetAll().Where(l => l.Validade <= DateOnly.FromDateTime(DateTime.Now.Date));
 
-            foreach (var lote in lotes)
-                Remover(lote.Id);
-
-            return lotes;
+            if (lotes.Any())
+            {
+                foreach (var lote in lotes)
+                    _loteRepository.Delete(lote.Id);
+                return lotes;
+            }
+            else
+                throw new ArgumentException("Não existem lotes vencidos para serem descartados.");
         }
     }
 }
