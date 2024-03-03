@@ -4,7 +4,7 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IProdutoRepository
     {
-        int Create(Produto produto);
+        Produto? Create(Produto produto);
         IEnumerable<Produto>? GetAll();
         Produto? GetByID(int id);
         IEnumerable<Produto>? GetByName(string name);
