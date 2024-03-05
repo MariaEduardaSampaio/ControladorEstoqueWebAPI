@@ -55,13 +55,15 @@ namespace ControladorEstoqueWebAPI.Services
 
                 var lote = new Lote()
                 {
+
                     UnidadesProdutos = request.UnidadesProdutos,
                     Validade = validade,
                     Codigo = GerarCodigo(validade, produto.Nome),
                     Produto = produto
                 };
 
-                _loteRepository.Create(lote);
+                int id = _loteRepository.Create(lote);
+                lote.Id = id;
 
                 return lote;
             }
