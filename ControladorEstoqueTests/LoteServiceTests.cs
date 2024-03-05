@@ -26,13 +26,13 @@ namespace ControladorEstoqueTests
 
             var produtoCriadoMock = new Produto()
             {
-                Id = 0,
+                Id = 1,
                 Nome = "Produto 1",
                 Lotes = new()
             };
 
             produtoRepositorySubstitute.GetByID(Arg.Any<int>()).Returns(produtoCriadoMock);
-            loteRepositorySubstitute.Create(Arg.Any<Lote>()).Returns(0);
+            loteRepositorySubstitute.Create(Arg.Any<Lote>()).Returns(1);
 
             var loteService = new LoteService(loteRepositorySubstitute, produtoRepositorySubstitute);
 
@@ -41,7 +41,7 @@ namespace ControladorEstoqueTests
 
             // Assert
             lote.Should().NotBeNull();
-            lote.Id.Should().Be(0);
+            lote.Id.Should().Be(1);
             lote.ProdutoId.Should().Be(produtoCriadoMock.Id);
             lote.Validade.Should().Be(DateOnly.Parse("11/03/2080"));
         }
